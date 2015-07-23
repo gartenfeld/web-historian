@@ -17,18 +17,26 @@ exports.handleRequest = function (req, res) {
     });
   };
 
-  var ext = path.extname(req.url)
+  var ext = path.extname(req.url);
   if (ext === '.html' || ext === '.css') {
-    console.log("Fetching: " + req.url);
-    fetch('./public/' + req.url, res);
-  } else if (req.url === '/') {
-    fetch('./public/index.html', res);
+    fetch(archive.paths.siteAssets + req.url, res);
+  } else if (req.url === '/' && req.method === "GET") {
+    fetch(archive.paths.siteAssets + 'index.html', res);
   } else if (req.method === "GET") {
     var siteName = req.url.slice(1);
-    fetch('../archives/sites/' + siteName, res)
+    fetch(archive.paths.archivedSites + siteName, res)
   } else if (req.method === "POST") {
-    console.log ("post :" + ext);
-    // fs.write('../archives/sites.text');
+    var body = '';
+    req.on('data', function(piece) {
+      body += piece;
+    });
+    req.on('end', function() {
+      body = JSON.parse(body);
+      archive.addUrlToList(body.url, function(){
+        res.statusCode = 302;
+        res.end();
+      });
+    });
   }
 
 
