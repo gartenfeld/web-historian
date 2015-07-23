@@ -13,13 +13,13 @@
   $( document ).ready(function() {
     $( "#submitButton" ).click(function() {
       var $url = $("#urlText").val();
-      console.log($url);
-
       $.ajax({
         type: "POST",
         url: '/',
         data: JSON.stringify({url: $url}),
-        success: function () {console.log("Success!")}
+        success: function () {
+          console.log("Success!");
+        }
       });
     });
 

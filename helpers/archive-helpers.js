@@ -77,6 +77,8 @@ exports.downloadUrls = function(arr) {
 };
 
 exports.cronTask = function() {
-  var urls = this.readListOfUrls(_.identity);
-  this.downloadUrls(urls);
+  var helper = this;
+  this.readListOfUrls(function(urls){
+    helper.downloadUrls(urls);
+  });  
 };
