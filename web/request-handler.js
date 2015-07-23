@@ -37,6 +37,12 @@ exports.handleRequest = function (req, res) {
     console.log(body);
     req.on('end', function() {
       body = JSON.parse(body);
+
+      // if archived
+      // archive.isUrlArchived(body.url);
+      // redirect to archived page
+      // else redirect to loading page
+
       archive.addUrlToList(body.url, function(){
         res.statusCode = 302;
         res.end();

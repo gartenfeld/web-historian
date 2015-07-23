@@ -27,7 +27,6 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(cb){
-  var urls;
   fs.readFile(this.paths.list, 'utf-8', function (err, data) {
     if (err) throw err;
     var urls = data.split('\n') || [];
@@ -53,21 +52,31 @@ exports.addUrlToList = function(url, cb){
   cb();
 };
 
-exports.isUrlArchived = function(){
+exports.isUrlArchived = function(url, cb){
+  var files = fs.readdirSync(this.paths.archivedSites);
+  cb(_(files).contains(url));
 };
 
-exports.downloadUrls = function(url){
-
+exports.downloadUrl = function(url) {
+  var saveTo = path.join(__dirname, '../archives/sites/') + url;
   http.get(
     {
-      url: url,
+      url: 'http://' + url,
       progress: function (current, total) {
-        console.log(url, 'downloaded %d bytes from %d', current, total);
+        console.log('Site: ' + url, '\t >> Downloaded ' + current + '/' + total);
       }
     }, 
-    this.paths.archivedSites + url, 
+    saveTo, 
     function (err, res) {
     }
   );
+};
 
+exports.downloadUrls = function(arr) {
+  _(arr).each(this.downloadUrl);
+};
+
+exports.cronTask = function() {
+  var urls = this.readListOfUrls(_.identity);
+  this.downloadUrls(urls);
 };

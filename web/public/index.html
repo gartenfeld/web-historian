@@ -18,7 +18,7 @@
       $.ajax({
         type: "POST",
         url: '/',
-        data: "{'url': "+$url+"}",
+        data: JSON.stringify({url: $url}),
         success: function () {console.log("Success!")}
       });
     });
