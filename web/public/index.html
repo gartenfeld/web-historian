@@ -2,11 +2,28 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css" />
+  <script src="libs/jquery.min.js"></script>
 </head>
 <body>
   Enter a URL here:
-  <form method="POST">
-    <input type="input" name="url"></input>
-  </form>
+    <input id="urlText"></input>
+    <a id="submitButton" href="#">Submit</a>
+
+  <script>
+  $( document ).ready(function() {
+    $( "#submitButton" ).click(function() {
+      var $url = $("#urlText").val();
+      console.log($url);
+
+      $.ajax({
+        type: "POST",
+        url: '/',
+        data: "{'url': "+$url+"}",
+        success: function () {console.log("Success!")}
+      });
+    });
+
+  });
+  </script>
 </body>
 </html>

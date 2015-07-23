@@ -17,19 +17,24 @@ exports.handleRequest = function (req, res) {
     });
   };
 
+  if (req.url === '/download') {
+    archive.downloadUrls("www.google.com");
+  }
+
   var ext = path.extname(req.url);
-  if (ext === '.html' || ext === '.css') {
+  if (ext === '.html' || ext === '.css' || ext === '.js') {
     fetch(archive.paths.siteAssets + req.url, res);
   } else if (req.url === '/' && req.method === "GET") {
     fetch(archive.paths.siteAssets + 'index.html', res);
   } else if (req.method === "GET") {
     var siteName = req.url.slice(1);
-    fetch(archive.paths.archivedSites + siteName, res)
+    fetch(archive.paths.archivedSites + siteName, res);
   } else if (req.method === "POST") {
     var body = '';
     req.on('data', function(piece) {
       body += piece;
     });
+    console.log(body);
     req.on('end', function() {
       body = JSON.parse(body);
       archive.addUrlToList(body.url, function(){
